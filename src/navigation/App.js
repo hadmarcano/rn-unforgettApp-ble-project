@@ -24,7 +24,7 @@ const AppNavigation = () => {
   const [fontsLoaded] = useFonts({
     "OpenSans-Light": theme.assets.OpenSansLight,
     "OpenSans-Regular": theme.assets.OpenSansRegular,
-    "Opensans-SemiBold": theme.assets.OpenSansSemiBold,
+    "OpenSans-SemiBold": theme.assets.OpenSansSemiBold,
     "OpenSans-extraBold": theme.assets.OpenSansExtraBold,
     "OpenSans-Bold": theme.assets.OpenSansBold,
   });
