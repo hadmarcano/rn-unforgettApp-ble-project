@@ -1,23 +1,30 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-
+import { Text } from "../components";
 import {
   Home,
   // Articles, Components, Profile, Register, Pro
 } from "../screens";
-import { useScreenOptions } from "../hooks";
+import { useScreenOptions, useTheme } from "../hooks";
 
 const Stack = createStackNavigator();
 
 export default () => {
   const screenOptions = useScreenOptions();
+  const { assets, colors, gradients, sizes } = useTheme();
 
   return (
     <Stack.Navigator screenOptions={screenOptions.stack}>
       <Stack.Screen
         name="Home"
         component={Home}
-        options={{ title: "Inicio" }}
+        options={{
+          title: (
+            <Text p black marginLeft={sizes.s}>
+              {"  Inicio"}
+            </Text>
+          ),
+        }}
       />
 
       {/* <Stack.Screen

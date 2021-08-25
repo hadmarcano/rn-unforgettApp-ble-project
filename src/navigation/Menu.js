@@ -6,6 +6,7 @@ import {
   createDrawerNavigator,
   DrawerContentScrollView,
 } from "@react-navigation/drawer";
+import { useDrawerStatus } from "@react-navigation/drawer";
 
 import Screens from "./Screens";
 import { Block, Text, Switch, Button, Image } from "../components";
@@ -16,8 +17,9 @@ const Drawer = createDrawerNavigator();
 /* drawer menu screens navigation */
 const ScreensStack = () => {
   const { colors } = useTheme();
-  // const isDrawerOpen = useIsDrawerOpen();
-  const isDrawerOpen = false;
+  const isDrawerOpen = useDrawerStatus() === "open" ? 1 : 0;
+
+  // const isDrawerOpen = false;
   const animation = useRef(new Animated.Value(0)).current;
 
   const scale = animation.interpolate({
@@ -36,6 +38,7 @@ const ScreensStack = () => {
   };
 
   useEffect(() => {
+    // console.log("(isDrawerOpen)", isDrawerOpen);
     Animated.timing(animation, {
       duration: 200,
       useNativeDriver: true,
@@ -97,7 +100,9 @@ const DrawerContent = (props) => {
       scrollEnabled
       removeClippedSubviews
       renderToHardwareTextureAndroid
-      contentContainerStyle={{ paddingBottom: sizes.padding }}
+      contentContainerStyle={{
+        paddingBottom: sizes.padding,
+      }}
     >
       <Block paddingHorizontal={sizes.padding}>
         <Block flex={0} row align="center" marginBottom={sizes.l}>
@@ -233,7 +238,11 @@ export default () => {
           backgroundColor: "transparent",
         }}
       >
-        <Drawer.Screen name="Screens" component={ScreensStack} />
+        <Drawer.Screen
+          name="Screens"
+          component={ScreensStack}
+          options={{ headerShown: false }}
+        />
       </Drawer.Navigator>
     </Block>
   );

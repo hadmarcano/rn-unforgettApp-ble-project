@@ -5,6 +5,7 @@ import AppLoading from "expo-app-loading";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 
 import Menu from "./Menu";
+import Register from "../screens/Register";
 import { useData, ThemeProvider } from "../hooks";
 
 const AppNavigation = () => {
@@ -50,6 +51,7 @@ const AppNavigation = () => {
   return (
     <ThemeProvider theme={theme} setTheme={setTheme}>
       <NavigationContainer theme={navigationTheme}>
+        {/* <Register /> */}
         <Menu />
       </NavigationContainer>
     </ThemeProvider>
