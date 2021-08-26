@@ -21,14 +21,14 @@ const Register = () => {
     name: false,
     email: false,
     password: false,
-    agreed: false,
+    // agreed: false,
   });
 
   const [registration, setRegistration] = useState({
     name: "",
     email: "",
     password: "",
-    agreed: false,
+    // agreed: false,
   });
   const { assets, colors, gradients, sizes } = useTheme();
 
@@ -52,7 +52,7 @@ const Register = () => {
       name: regex.name.test(registration.name),
       email: regex.email.test(registration.email),
       password: regex.password.test(registration.password),
-      agreed: registration.agreed,
+      // agreed: registration.agreed,
     }));
   }, [registration, setIsValid]);
 
@@ -68,7 +68,7 @@ const Register = () => {
             source={assets.background}
             height={sizes.height * 0.3}
           >
-            <Button
+            {/* <Button
               row
               flex={0}
               justify="flex-start"
@@ -87,7 +87,7 @@ const Register = () => {
               <Text p white marginLeft={sizes.s}>
                 {"goBack"}
               </Text>
-            </Button>
+            </Button> */}
 
             <Text h4 center white marginBottom={sizes.md}>
               {"Task Manager"}
@@ -103,6 +103,7 @@ const Register = () => {
           <Block
             flex={0}
             radius={sizes.sm}
+            color={colors.gray}
             marginHorizontal="8%"
             shadow={!isAndroid} // disabled shadow on Android due to blur overlay + elevation issue
           >

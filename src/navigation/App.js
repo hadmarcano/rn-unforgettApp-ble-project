@@ -51,8 +51,8 @@ const AppNavigation = () => {
   return (
     <ThemeProvider theme={theme} setTheme={setTheme}>
       <NavigationContainer theme={navigationTheme}>
-        {/* <Register /> */}
-        <Menu />
+        <Register />
+        {/* <Menu /> */}
       </NavigationContainer>
     </ThemeProvider>
   );
