@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Linking, Platform } from "react-native";
+import { TextInput } from "react-native";
 // import { useNavigation } from "@react-navigation/core";
+// import { userSignin } from "../config/apiAuth";
 
 import { useData, useTheme } from "../hooks";
 import * as regex from "../constants/regex";
@@ -18,19 +20,31 @@ const Register = () => {
   const { isDark } = useData();
   //   const navigation = useNavigation();
   const [isValid, setIsValid] = useState({
-    name: false,
+    // name: false,
+    // agreed: false,
     email: false,
     password: false,
-    // agreed: false,
   });
 
   const [registration, setRegistration] = useState({
-    name: "",
+    // name: "",
+    // agreed: false,
     email: "",
     password: "",
-    // agreed: false,
   });
+
+  const { email, password } = registration;
   const { assets, colors, gradients, sizes } = useTheme();
+
+  useEffect(() => {
+    setIsValid((state) => ({
+      ...state,
+      // name: regex.name.test(registration.name),
+      // agreed: registration.agreed,
+      email: regex.email.test(registration.email),
+      password: regex.password.test(registration.password),
+    }));
+  }, [registration, setIsValid]);
 
   const handleChange = useCallback(
     (value) => {
@@ -43,21 +57,16 @@ const Register = () => {
     if (!Object.values(isValid).includes(false)) {
       /** send/save registratin data */
       console.log("handleSignUp", registration);
+      // userSignin(registration).then((response) => {
+      //   console.log(response);
+      // });
+    } else {
+      console.log("Ivalid entries");
     }
   }, [isValid, registration]);
 
-  useEffect(() => {
-    setIsValid((state) => ({
-      ...state,
-      name: regex.name.test(registration.name),
-      email: regex.email.test(registration.email),
-      password: regex.password.test(registration.password),
-      // agreed: registration.agreed,
-    }));
-  }, [registration, setIsValid]);
-
   return (
-    <Block safe marginTop={sizes.md}>
+    <Block safe marginTop={sizes.md} blockColor={colors.grayblue}>
       <Block paddingHorizontal={sizes.s}>
         <Block flex={0} style={{ zIndex: 0 }}>
           <Image
@@ -103,7 +112,6 @@ const Register = () => {
           <Block
             flex={0}
             radius={sizes.sm}
-            color={colors.gray}
             marginHorizontal="8%"
             shadow={!isAndroid} // disabled shadow on Android due to blur overlay + elevation issue
           >
@@ -118,10 +126,10 @@ const Register = () => {
               paddingVertical={sizes.sm}
             >
               <Text p semibold center>
-                {"subtitle"}
+                {"Inicie sesión"}
               </Text>
               {/* social buttons */}
-              <Block row center justify="space-evenly" marginVertical={sizes.m}>
+              {/* <Block row center justify="space-evenly" marginVertical={sizes.m}>
                 <Button outlined gray shadow={!isAndroid}>
                   <Image
                     source={assets.facebook}
@@ -146,37 +154,38 @@ const Register = () => {
                     color={isDark ? colors.icon : undefined}
                   />
                 </Button>
-              </Block>
-              <Block
-                row
-                flex={0}
-                align="center"
-                justify="center"
-                marginBottom={sizes.sm}
-                paddingHorizontal={sizes.xxl}
-              >
-                <Block
-                  flex={0}
-                  height={1}
-                  width="50%"
-                  end={[1, 0]}
-                  start={[0, 1]}
-                  gradient={gradients.divider}
-                />
-                <Text center marginHorizontal={sizes.s}>
-                  {"or"}
-                </Text>
-                <Block
-                  flex={0}
-                  height={1}
-                  width="50%"
-                  end={[0, 1]}
-                  start={[1, 0]}
-                  gradient={gradients.divider}
-                />
-              </Block>
+              </Block> */}
+
               {/* form inputs */}
               <Block paddingHorizontal={sizes.sm}>
+                <Block marginVertical={sizes.sm}>
+                  <TextInput
+                    style={{
+                      height: 40,
+                      borderColor: "gray",
+                      borderRadius: 8,
+                      borderWidth: 1,
+                      paddingHorizontal: 10,
+                    }}
+                    placeholder="Usuario"
+                    onChangeText={(value) => handleChange({ email: value })}
+                    value={email}
+                  />
+                </Block>
+                <Block marginVertical={sizes.sm}>
+                  <TextInput
+                    style={{
+                      height: 40,
+                      borderColor: "gray",
+                      borderRadius: 8,
+                      borderWidth: 1,
+                      paddingHorizontal: 10,
+                    }}
+                    placeholder="Contraseña"
+                    onChangeText={(value) => handleChange({ password: value })}
+                    value={password}
+                  />
+                </Block>
                 {/* <Input
                   autoCapitalize="none"
                   marginBottom={sizes.m}
@@ -214,7 +223,7 @@ const Register = () => {
                   checked={registration?.agreed}
                   onPress={(value) => handleChange({ agreed: value })}
                 /> */}
-                <Text paddingRight={sizes.s}>
+                {/* <Text paddingRight={sizes.s}>
                   {"agree"}
                   <Text
                     semibold
@@ -224,19 +233,47 @@ const Register = () => {
                   >
                     {"terms"}
                   </Text>
-                </Text>
+                </Text> */}
               </Block>
               <Button
                 onPress={handleSignUp}
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
                 gradient={gradients.primary}
-                disabled={Object.values(isValid).includes(false)}
+                // disabled={Object.values(isValid).includes(false)}
               >
                 <Text bold white transform="uppercase">
-                  {"Signup"}
+                  {"Entrar"}
                 </Text>
               </Button>
+              <Block
+                row
+                flex={0}
+                align="center"
+                justify="center"
+                marginBottom={sizes.sm}
+                paddingHorizontal={sizes.xxl}
+              >
+                <Block
+                  flex={0}
+                  height={1}
+                  width="50%"
+                  end={[1, 0]}
+                  start={[0, 1]}
+                  gradient={gradients.divider}
+                />
+                <Text center marginHorizontal={sizes.s}>
+                  {"o"}
+                </Text>
+                <Block
+                  flex={0}
+                  height={1}
+                  width="50%"
+                  end={[0, 1]}
+                  start={[1, 0]}
+                  gradient={gradients.divider}
+                />
+              </Block>
               <Button
                 primary
                 outlined
@@ -248,7 +285,7 @@ const Register = () => {
                 }}
               >
                 <Text bold primary transform="uppercase">
-                  {"Signin"}
+                  {"Registrarse"}
                 </Text>
               </Button>
             </Block>

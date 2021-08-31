@@ -22,6 +22,11 @@ export const COLORS = {
   // gray variations
   /** UI color for #gray */
   gray: "#A7A8AE",
+  grayblue: "#34495E",
+
+  // orange variations
+  /** UI color for #orange */
+  orange: "#CA6F1E",
 
   // colors variations
   /** UI color for #danger */
@@ -36,6 +41,7 @@ export const COLORS = {
   /** UI colors for navigation & card */
   card: "#FFFFFF",
   background: "#E9ECEF",
+  backgroundPurple: "#6c73c1",
 
   /** UI color for shadowColor */
   shadow: "#000000",
