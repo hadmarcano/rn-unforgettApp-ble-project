@@ -185,7 +185,7 @@ const DrawerContent = (props) => {
           marginBottom={sizes.s}
           onPress={() =>
             handleWebLink(
-              "https://github.com/hadmarcano/app-react-native-context-architecture"
+              "https://github.com/hadmarcano/rn-unforgettApp-ble-project"
             )
           }
         >

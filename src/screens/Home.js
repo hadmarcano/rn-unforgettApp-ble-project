@@ -32,21 +32,39 @@ const Home = (props) => {
     };
   }, [reload, tab]);
 
-  const gettingTasks = async () => {
-    const token = await Storage.getData("t-token");
-    console.log("token", token);
-    const tasks = await getAllTasks(token);
-    console.log("tasks", tasks);
-    if (tab == 0) {
-      setNotes(tasks);
-      // const pendingTasks = tasks.filter((item) => item.completed == false);
-      // setCountPendings(pendingTasks.length);
-    } else {
-      const pendingTasks = tasks.filter((item) => item.completed == false);
-      setNotes(pendingTasks);
-      // setCountPendings(pendingTasks.length);
-    }
+  const gettingTasks = () => {
+    Storage.getData("t-token").then((token) => {
+      console.log("token", token);
+
+      getAllTasks(token).then((tasks) => {
+        console.log("tasks", tasks);
+        if (tab == 0) {
+          setNotes(tasks);
+          // const pendingTasks = tasks.filter((item) => item.completed == false);
+          // setCountPendings(pendingTasks.length);
+        } else {
+          const pendingTasks = tasks.filter((item) => item.completed == false);
+          setNotes(pendingTasks);
+          // setCountPendings(pendingTasks.length);
+        }
+      });
+    });
   };
+  // const gettingTasks = async () => {
+  //   const token = await Storage.getData("t-token");
+  //   console.log("token", token);
+  //   const tasks = await getAllTasks(token);
+  //   console.log("tasks", tasks);
+  //   if (tab == 0) {
+  //     setNotes(tasks);
+  //     // const pendingTasks = tasks.filter((item) => item.completed == false);
+  //     // setCountPendings(pendingTasks.length);
+  //   } else {
+  //     const pendingTasks = tasks.filter((item) => item.completed == false);
+  //     setNotes(pendingTasks);
+  //     // setCountPendings(pendingTasks.length);
+  //   }
+  // };
 
   const truncateString = (str, num) => {
     if (str.length > num) {
