@@ -4,6 +4,9 @@ import { URL } from "./index";
 export const userSignin = (values) => {
   return fetch(`${URL}/users/login`, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(values),
   })
     .then((response) => {
@@ -17,9 +20,10 @@ export const userSignin = (values) => {
 
 //Signup
 export const userSignup = (values) => {
-  return fetch(`${URL}/users`, {
-    method: "POST",
-    body: JSON.stringify(values),
+  // return fetch(`${URL}/users`, {
+  return fetch(`${URL}/tasks`, {
+    method: "GET",
+    // body: JSON.stringify(values),
   })
     .then((response) => {
       const result = response.json();
@@ -31,7 +35,7 @@ export const userSignup = (values) => {
 };
 
 //Signout
-export const userSignout = (values) => {
+export const userSignout = () => {
   return fetch(`${URL}/users/logout`, {
     method: "POST",
     // body: JSON.stringify(values)

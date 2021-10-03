@@ -7,7 +7,7 @@ import {
   DrawerContentScrollView,
 } from "@react-navigation/drawer";
 import { useDrawerStatus } from "@react-navigation/drawer";
-
+import Storage from "../libs/storage";
 import Screens from "./Screens";
 import { Block, Text, Switch, Button, Image } from "../components";
 import { useData, useTheme } from "../hooks";
@@ -82,10 +82,16 @@ const DrawerContent = (props) => {
 
   const handleWebLink = useCallback((url) => Linking.openURL(url), []);
 
+  const logoutSession = async () => {
+    const removed = await Storage.removeValue("t-token");
+    console.log("removed", removed);
+    navigation.navigate("Login");
+  };
+
   // screen list for Drawer menu
   const screens = [
     { name: "Home", to: "Home", icon: assets.home },
-    // {name: t('screens.components'), to: 'Components', icon: assets.components},
+    { name: "Create", to: "Create", icon: assets.search },
     // {name: t('screens.articles'), to: 'Articles', icon: assets.document},
     // {name: t('screens.rental'), to: 'Pro', icon: assets.rental},
     // {name: t('screens.profile'), to: 'Profile', icon: assets.profile},
@@ -116,7 +122,7 @@ const DrawerContent = (props) => {
           />
           <Block>
             <Text size={12} semibold>
-              {"Task Manager App"}
+              {"UnforgettApp-ble"}
             </Text>
             <Text size={12} semibold>
               {"By Héctor Díaz"}
@@ -142,7 +148,8 @@ const DrawerContent = (props) => {
                 width={sizes.md}
                 height={sizes.md}
                 marginRight={sizes.s}
-                gradient={gradients[isActive ? "primary" : "white"]}
+                gradient={gradients?.["secondary"]}
+                // gradient={gradients[isActive ? "primary" : "white"]}
               >
                 <Image
                   radius={0}
@@ -205,7 +212,7 @@ const DrawerContent = (props) => {
           </Text>
         </Button>
 
-        <Block row justify="space-between" marginTop={sizes.sm}>
+        {/* <Block row justify="space-between" marginTop={sizes.sm}>
           <Text color={labelColor}>{"modo Oscuro"}</Text>
           <Switch
             checked={isDark}
@@ -214,7 +221,43 @@ const DrawerContent = (props) => {
               Alert.alert("Extras", "Extras");
             }}
           />
-        </Block>
+        </Block> */}
+        <Block
+          flex={0}
+          height={1}
+          marginRight={sizes.md}
+          marginVertical={sizes.sm}
+          gradient={gradients.menu}
+        />
+        <Button
+          row
+          justify="flex-start"
+          marginTop={sizes.sm}
+          marginBottom={sizes.s}
+          onPress={() => logoutSession()}
+        >
+          <Block
+            flex={0}
+            radius={6}
+            align="center"
+            justify="center"
+            width={sizes.md}
+            height={sizes.md}
+            marginRight={sizes.s}
+            gradient={gradients.white}
+          >
+            <Image
+              radius={0}
+              width={14}
+              height={14}
+              color={colors.black}
+              source={assets.close}
+            />
+          </Block>
+          <Text p color={labelColor}>
+            {"Cerrar sesión"}
+          </Text>
+        </Button>
       </Block>
     </DrawerContentScrollView>
   );

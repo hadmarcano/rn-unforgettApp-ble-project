@@ -1,10 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Text } from "../components";
-import {
-  Home,
-  // Articles, Components, Profile, Register, Pro
-} from "../screens";
+import { Home, Create, Update } from "../screens";
 import { useScreenOptions, useTheme } from "../hooks";
 
 const Stack = createStackNavigator();
@@ -27,6 +24,16 @@ export default () => {
         }}
       />
 
+      <Stack.Screen
+        name="Create"
+        component={Create}
+        options={screenOptions.create}
+      />
+      <Stack.Screen
+        name="Update"
+        component={Update}
+        options={screenOptions.create}
+      />
       {/* <Stack.Screen
         name="Components"
         component={Components}

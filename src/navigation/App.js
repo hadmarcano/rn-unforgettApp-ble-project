@@ -3,13 +3,15 @@ import { Platform, StatusBar } from "react-native";
 import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
-
-import Menu from "./Menu";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Register from "../screens/Register";
+import Menu from "./Menu";
 import { useData, ThemeProvider } from "../hooks";
 
 const AppNavigation = () => {
   const { theme, setTheme } = useData();
+
+  const Stack = createNativeStackNavigator();
 
   useEffect(() => {
     Platform.OS === "android" && StatusBar.setTranslucent(true);
@@ -51,7 +53,15 @@ const AppNavigation = () => {
   return (
     <ThemeProvider theme={theme} setTheme={setTheme}>
       <NavigationContainer theme={navigationTheme}>
-        <Register />
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="Login" component={Register} />
+          <Stack.Screen name="Inside" component={Menu} />
+          {/* <Register /> */}
+        </Stack.Navigator>
         {/* <Menu /> */}
       </NavigationContainer>
     </ThemeProvider>

@@ -7,10 +7,13 @@ export const DataContext = createContext({});
 
 export const DataProvider = ({ children }) => {
   const [theme, setTheme] = useState(light);
+  const [countPendings, setCountPendings] = useState(0);
 
   const contextValue = {
     theme,
     setTheme,
+    countPendings,
+    setCountPendings,
   };
 
   return (

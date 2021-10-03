@@ -79,6 +79,8 @@ export const ASSETS = {
   card1: require("../assets/images/card1.png"),
   card2: require("../assets/images/card2.png"),
   card3: require("../assets/images/card3.png"),
+  cardNew: require("../assets/images/cardNew.png"),
+  logout: require("../assets/icons/logout.png"),
   card4: require("../assets/images/card4.png"),
   card5: require("../assets/images/card5.png"),
 

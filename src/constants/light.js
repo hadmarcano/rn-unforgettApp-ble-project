@@ -68,6 +68,7 @@ export const COLORS = {
   icon: "#8392AB",
 
   /** blur tint color */
+  blurTintSec: "dark",
   blurTint: "light",
 
   /** product link color */

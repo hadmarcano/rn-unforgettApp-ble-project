@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Linking, Platform } from "react-native";
 import { TextInput } from "react-native";
-// import { useNavigation } from "@react-navigation/core";
-// import { userSignin } from "../config/apiAuth";
-
+import { useNavigation } from "@react-navigation/core";
+import Storage from "../libs/storage";
+import { userSignin } from "../config/apiAuth";
 import { useData, useTheme } from "../hooks";
 import * as regex from "../constants/regex";
 import {
@@ -14,56 +14,69 @@ import {
   // Input, Checkbox
 } from "../components/";
 
-const isAndroid = Platform.OS === "android";
-
 const Register = () => {
   const { isDark } = useData();
-  //   const navigation = useNavigation();
-  const [isValid, setIsValid] = useState({
-    // name: false,
-    // agreed: false,
-    email: false,
-    password: false,
-  });
-
-  const [registration, setRegistration] = useState({
-    // name: "",
-    // agreed: false,
+  const navigation = useNavigation();
+  const { assets, colors, gradients, sizes } = useTheme();
+  const isAndroid = Platform.OS === "android";
+  const [isNewUser, setIsNewUser] = useState(false);
+  const [values, setValues] = useState({
+    name: "",
     email: "",
     password: "",
   });
 
-  const { email, password } = registration;
-  const { assets, colors, gradients, sizes } = useTheme();
+  const { name, email, password } = values;
 
   useEffect(() => {
-    setIsValid((state) => ({
-      ...state,
-      // name: regex.name.test(registration.name),
-      // agreed: registration.agreed,
-      email: regex.email.test(registration.email),
-      password: regex.password.test(registration.password),
-    }));
-  }, [registration, setIsValid]);
+    setValues({
+      name: "",
+      email: "",
+      password: "",
+    });
+  }, [isNewUser]);
 
   const handleChange = useCallback(
     (value) => {
-      setRegistration((state) => ({ ...state, ...value }));
+      setValues((state) => ({ ...state, ...value }));
     },
-    [setRegistration]
+    [setValues]
   );
 
-  const handleSignUp = useCallback(() => {
-    if (!Object.values(isValid).includes(false)) {
-      /** send/save registratin data */
-      console.log("handleSignUp", registration);
-      // userSignin(registration).then((response) => {
-      //   console.log(response);
-      // });
+  const handleSignUp = () => {
+    console.log("SignUp", name, email, password);
+  };
+
+  const handleSignIn = () => {
+    console.log({
+      email: email,
+      password: password,
+    });
+    userSignin({
+      email: email,
+      password: password,
+    }).then((response) => {
+      if (response.error) {
+        console.log(response.error);
+        console.log("¡Oh! !Ha ocurrido un error!");
+      } else {
+        console.log(response);
+        StorageToken(response.token);
+        navigation.navigate("Inside");
+      }
+    });
+  };
+
+  const StorageToken = async (value) => {
+    const ifExist = await Storage.getData("t-token");
+    console.log(ifExist);
+    if (ifExist === null) {
+      await Storage.storeData("t-token", value);
     } else {
-      console.log("Ivalid entries");
+      await Storage.removeValue("t-token");
+      await Storage.storeData("t-token", value);
     }
-  }, [isValid, registration]);
+  };
 
   return (
     <Block safe marginTop={sizes.md} blockColor={colors.grayblue}>
@@ -74,32 +87,18 @@ const Register = () => {
             resizeMode="cover"
             padding={sizes.sm}
             radius={sizes.cardRadius}
-            source={assets.background}
+            source={assets.cardNew}
             height={sizes.height * 0.3}
           >
-            {/* <Button
-              row
-              flex={0}
-              justify="flex-start"
-              onPress={() => {
-                //    navigation.goBack();
-              }}
+            <Text
+              h4
+              center
+              bold
+              white
+              marginBottom={sizes.md}
+              // gradient={gradients.primary}
             >
-              <Image
-                radius={0}
-                width={10}
-                height={18}
-                color={colors.white}
-                source={assets.arrow}
-                transform={[{ rotate: "180deg" }]}
-              />
-              <Text p white marginLeft={sizes.s}>
-                {"goBack"}
-              </Text>
-            </Button> */}
-
-            <Text h4 center white marginBottom={sizes.md}>
-              {"Task Manager"}
+              {"UnforgettApp-ble"}
             </Text>
           </Image>
         </Block>
@@ -125,39 +124,35 @@ const Register = () => {
               tint={colors.blurTint}
               paddingVertical={sizes.sm}
             >
-              <Text p semibold center>
-                {"Inicie sesión"}
-              </Text>
-              {/* social buttons */}
-              {/* <Block row center justify="space-evenly" marginVertical={sizes.m}>
-                <Button outlined gray shadow={!isAndroid}>
-                  <Image
-                    source={assets.facebook}
-                    height={sizes.m}
-                    width={sizes.m}
-                    color={isDark ? colors.icon : undefined}
-                  />
-                </Button>
-                <Button outlined gray shadow={!isAndroid}>
-                  <Image
-                    source={assets.apple}
-                    height={sizes.m}
-                    width={sizes.m}
-                    color={isDark ? colors.icon : undefined}
-                  />
-                </Button>
-                <Button outlined gray shadow={!isAndroid}>
-                  <Image
-                    source={assets.google}
-                    height={sizes.m}
-                    width={sizes.m}
-                    color={isDark ? colors.icon : undefined}
-                  />
-                </Button>
-              </Block> */}
+              {isNewUser && (
+                <Text h5 semibold center>
+                  {"Crear mi cuenta"}
+                </Text>
+              )}
+              {!isNewUser && (
+                <Text h5 semibold center>
+                  {"Inicie sesión"}
+                </Text>
+              )}
 
               {/* form inputs */}
               <Block paddingHorizontal={sizes.sm}>
+                {isNewUser && (
+                  <Block marginVertical={sizes.sm}>
+                    <TextInput
+                      style={{
+                        height: 40,
+                        borderColor: "gray",
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        paddingHorizontal: 10,
+                      }}
+                      placeholder="Nombre completo"
+                      onChangeText={(value) => handleChange({ name: value })}
+                      value={name}
+                    />
+                  </Block>
+                )}
                 <Block marginVertical={sizes.sm}>
                   <TextInput
                     style={{
@@ -167,7 +162,7 @@ const Register = () => {
                       borderWidth: 1,
                       paddingHorizontal: 10,
                     }}
-                    placeholder="Usuario"
+                    placeholder="Email"
                     onChangeText={(value) => handleChange({ email: value })}
                     value={email}
                   />
@@ -186,109 +181,134 @@ const Register = () => {
                     value={password}
                   />
                 </Block>
-                {/* <Input
-                  autoCapitalize="none"
-                  marginBottom={sizes.m}
-                  label={"name"}
-                  placeholder={"namePlaceholder"}
-                  success={Boolean(registration.name && isValid.name)}
-                  danger={Boolean(registration.name && !isValid.name)}
-                  onChangeText={(value) => handleChange({ name: value })}
-                />
-                <Input
-                  autoCapitalize="none"
-                  marginBottom={sizes.m}
-                  label={"email"}
-                  keyboardType="email-address"
-                  placeholder={"emailPlaceholder"}
-                  success={Boolean(registration.email && isValid.email)}
-                  danger={Boolean(registration.email && !isValid.email)}
-                  onChangeText={(value) => handleChange({ email: value })}
-                />
-                <Input
-                  secureTextEntry
-                  autoCapitalize="none"
-                  marginBottom={sizes.m}
-                  label={"password"}
-                  placeholder={"passwordPlaceholder"}
-                  onChangeText={(value) => handleChange({ password: value })}
-                  success={Boolean(registration.password && isValid.password)}
-                  danger={Boolean(registration.password && !isValid.password)}
-                /> */}
               </Block>
-              {/* checkbox terms */}
-              <Block row flex={0} align="center" paddingHorizontal={sizes.sm}>
-                {/* <Checkbox
-                  marginRight={sizes.sm}
-                  checked={registration?.agreed}
-                  onPress={(value) => handleChange({ agreed: value })}
-                /> */}
-                {/* <Text paddingRight={sizes.s}>
-                  {"agree"}
-                  <Text
-                    semibold
-                    onPress={() => {
-                      Linking.openURL("https://www.creative-tim.com/terms");
-                    }}
-                  >
-                    {"terms"}
-                  </Text>
-                </Text> */}
-              </Block>
-              <Button
-                onPress={handleSignUp}
-                marginVertical={sizes.s}
-                marginHorizontal={sizes.sm}
-                gradient={gradients.primary}
-                // disabled={Object.values(isValid).includes(false)}
-              >
-                <Text bold white transform="uppercase">
-                  {"Entrar"}
-                </Text>
-              </Button>
+
               <Block
                 row
                 flex={0}
                 align="center"
-                justify="center"
-                marginBottom={sizes.sm}
-                paddingHorizontal={sizes.xxl}
-              >
-                <Block
-                  flex={0}
-                  height={1}
-                  width="50%"
-                  end={[1, 0]}
-                  start={[0, 1]}
-                  gradient={gradients.divider}
-                />
-                <Text center marginHorizontal={sizes.s}>
-                  {"o"}
-                </Text>
-                <Block
-                  flex={0}
-                  height={1}
-                  width="50%"
-                  end={[0, 1]}
-                  start={[1, 0]}
-                  gradient={gradients.divider}
-                />
-              </Block>
-              <Button
-                primary
-                outlined
-                shadow={!isAndroid}
-                marginVertical={sizes.s}
-                marginHorizontal={sizes.sm}
-                onPress={() => {
-                  //   navigation.navigate("Pro")
-                }}
-              >
-                <Text bold primary transform="uppercase">
-                  {"Registrarse"}
-                </Text>
-              </Button>
+                paddingHorizontal={sizes.sm}
+              ></Block>
+              {!isNewUser && (
+                <>
+                  <Button
+                    marginVertical={sizes.s}
+                    marginHorizontal={sizes.sm}
+                    gradient={gradients.secondary}
+                    onPress={handleSignIn}
+                    disabled={false}
+                  >
+                    <Text bold white transform="uppercase">
+                      {"Entrar"}
+                    </Text>
+                  </Button>
+                  <Block
+                    row
+                    flex={0}
+                    align="center"
+                    justify="center"
+                    marginBottom={sizes.sm}
+                    paddingHorizontal={sizes.xxl}
+                  >
+                    <Block
+                      flex={0}
+                      height={1}
+                      width="50%"
+                      end={[1, 0]}
+                      start={[0, 1]}
+                      gradient={gradients.divider}
+                    />
+                    <Text center marginHorizontal={sizes.s}>
+                      {"o"}
+                    </Text>
+                    <Block
+                      flex={0}
+                      height={1}
+                      width="50%"
+                      end={[0, 1]}
+                      start={[1, 0]}
+                      gradient={gradients.divider}
+                    />
+                  </Block>
+                  <Button
+                    secondary
+                    outlined
+                    shadow={!isAndroid}
+                    marginVertical={sizes.s}
+                    marginHorizontal={sizes.sm}
+                    onPress={() => {
+                      setIsNewUser(true);
+                    }}
+                  >
+                    <Text bold grayblue transform="uppercase">
+                      {"Registrarse"}
+                    </Text>
+                  </Button>
+                </>
+              )}
+              {isNewUser && (
+                <>
+                  <Button
+                    marginVertical={sizes.s}
+                    marginHorizontal={sizes.sm}
+                    gradient={gradients.secondary}
+                    onPress={handleSignUp}
+                    disabled={false}
+                  >
+                    <Text bold white transform="uppercase">
+                      {"Crear mi cuenta"}
+                    </Text>
+                  </Button>
+                  <Block
+                    row
+                    flex={0}
+                    align="center"
+                    justify="center"
+                    marginBottom={sizes.sm}
+                    paddingHorizontal={sizes.xxl}
+                  >
+                    <Block
+                      flex={0}
+                      height={1}
+                      width="50%"
+                      end={[1, 0]}
+                      start={[0, 1]}
+                      gradient={gradients.divider}
+                    />
+                    {/* <Text center marginHorizontal={sizes.s}>
+                      {"o"}
+                    </Text> */}
+                    <Block
+                      flex={0}
+                      height={1}
+                      width="50%"
+                      end={[0, 1]}
+                      start={[1, 0]}
+                      gradient={gradients.divider}
+                    />
+                  </Block>
+                  <Button
+                    secondary
+                    outlined
+                    shadow={!isAndroid}
+                    marginVertical={sizes.s}
+                    marginHorizontal={sizes.sm}
+                    onPress={() => {
+                      setIsNewUser(false);
+                    }}
+                  >
+                    <Text bold grayblue transform="uppercase">
+                      {"Inicio de sesión"}
+                    </Text>
+                  </Button>
+                </>
+              )}
             </Block>
+            <Block flex={0} height={1} width="50%" />
+            <Block flex={0} height={1} width="50%" />
+            <Text center marginHorizontal={sizes.s}>
+              {"Made with 💜  by Héctor Díaz"}
+            </Text>
           </Block>
         </Block>
       </Block>

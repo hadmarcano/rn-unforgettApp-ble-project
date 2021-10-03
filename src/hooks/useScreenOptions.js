@@ -6,13 +6,14 @@ import { DrawerActions } from "@react-navigation/native";
 
 import Image from "../components/Image";
 import Text from "../components/Text";
-import useTheme from "../hooks/useTheme";
+import { useData, useTheme } from "../hooks/";
 import Button from "../components/Button";
 import Block from "../components/Block";
 
 export default () => {
   const navigation = useNavigation();
   const { icons, colors, gradients, sizes } = useTheme();
+  const { countPendings, setCountPendings } = useData();
 
   const menu = {
     headerStyle: { elevation: 0 },
@@ -31,24 +32,31 @@ export default () => {
       <Block row flex={0} align="center" marginRight={sizes.padding}>
         <TouchableOpacity
           style={{ marginRight: sizes.sm }}
-          onPress={() =>
-            navigation.navigate("Screens", {
-              screen: "Pro",
-            })
-          }
+          // onPress={() =>
+          //   navigation.navigate("Screens", {
+          //     screen: "Pro",
+          //   })
+          // }
         >
           <Image source={icons.bell} radius={0} color={colors.icon} />
           <Block
             flex={0}
-            right={0}
-            width={sizes.s}
-            height={sizes.s}
-            radius={sizes.xs}
+            padding={0}
+            justify="center"
             position="absolute"
+            top={-sizes.s}
+            right={-sizes.s}
+            width={sizes.sm}
+            height={sizes.sm}
+            radius={sizes.sm / 2}
             gradient={gradients?.primary}
-          />
+          >
+            <Text white center bold size={10} lineHeight={10} paddingTop={3}>
+              3
+            </Text>
+          </Block>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() =>
             navigation.navigate("Screens", {
               screen: "Pro",
@@ -72,18 +80,18 @@ export default () => {
               3
             </Text>
           </Block>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </Block>
     ),
   };
 
   const options = {
     stack: menu,
-    components: {
+    create: {
       ...menu,
       headerTitle: () => (
-        <Text p white>
-          {"Componentes"}
+        <Text p secondary semibold>
+          {"  Create | Made with 💜  by Héctor Díaz"}
         </Text>
       ),
       headerRight: () => null,
@@ -91,7 +99,7 @@ export default () => {
         <Button
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         >
-          <Image source={icons.menu} radius={0} color={colors.white} />
+          <Image source={icons.menu} radius={0} color={colors.grayblue} />
         </Button>
       ),
     },
